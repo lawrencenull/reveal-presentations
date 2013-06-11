@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>Get a message | edelight</title>
+
+        <meta name="description" content="What's new in HTML5 - a presentation by Mirko Höch">
+        <meta name="author" content="Mirko Höch">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="/css/reveal.min.css">
+        <link rel="stylesheet" href="/css/theme/default.css">
+    </head>
+
+    <body>
+        <script>
+            //respond to events
+            window.addEventListener('message',function(event) {
+                if(event.origin !== 'http://reveal.local') return;
+                console.log('message received:  ' + event.data,event);
+                event.source.postMessage('Greetings earthling!',event.origin);
+            },false);
+        </script>
+    </body>
+</hmtl>

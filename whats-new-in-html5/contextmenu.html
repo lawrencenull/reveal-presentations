@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>HTML5 context menus | edelight</title>
+
+        <meta name="description" content="What's new in HTML5 - a presentation by Mirko Höch">
+        <meta name="author" content="Mirko Höch">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="/css/reveal.min.css">
+        <link rel="stylesheet" href="/css/theme/default.css">
+        <style>
+        section{height:100%;width:100%;}
+        </style>
+    </head>
+
+    <body>
+        <section contextmenu="mymenu">
+            <menu type="context" id="mymenu">
+                <menuitem label="Refresh Post" onclick="window.location.reload();" icon="/img/refresh-icon.png"></menuitem>
+                <menu label="Share on..." icon="/img/share_icon.gif">
+                    <menuitem label="Twitter" icon="/img/twitter_icon.gif" onclick="goTo('//twitter.com/intent/tweet?text=' + document.title + ':  ' + window.location.href);"></menuitem>
+                    <menuitem label="Facebook" icon="/img/facebook_icon16x16.gif" onclick="goTo('//facebook.com/sharer/sharer.php?u=' + window.location.href);"></menuitem>
+                </menu>
+            </menu>
+        </section>
+
+        <script>
+            function goTo(url) { window.open(url, "shareWindow"); }
+        </script>
+    </body>
+</hmtl>

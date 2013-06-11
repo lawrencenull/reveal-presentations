@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>What's new in HTML5 | edelight</title>
+
+        <meta name="description" content="What's new in HTML5 - a presentation by Mirko Höch">
+        <meta name="author" content="Mirko Höch">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="/css/reveal.min.css">
+        <link rel="stylesheet" href="/css/theme/default.css" id="theme">
+
+        <link rel="stylesheet" href="/lib/css/zenburn.css">
+
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
+        document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+        </script>
+    </head>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>What's new in HTML5?<br></h1>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>The element.dataset API</h2>
+                        <p><br></p>
+                        <ul>
+                            <li>a really simple API</li>
+                            <li>allows developers to get and set data- attribute values on HTML elements</li>
+                            <li>rules for working with the dataset API:<br>
+                                <ul>
+                                    <li>element.dataset cannot be referenced directly -- you will receive an error</li>
+                                    <li>you reference data- property names by camel-casing their attribute names</li>
+                                    <li>the name cannot start with xml</li>
+                                    <li>the name cannot contain uppercase letters<br>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <p>Assume the following element is within the page:</p>
+                        <pre><code><div id="myDiv" data-name="myDiv" data-id="myId" data-my-custom-key="This is the value"></div></code></pre>
+                        <p>To retrieve the data-id attribute value, you'd code:</p>
+                        <pre><code>// Get the element
+var element = document.getElementById("myDiv");
+
+// Get the id
+var id = element.dataset.id;</code></pre>
+                        <p>To retrieve the data-my-custom-key attribute, you'd code:</p>
+                        <pre><code>// Retrieves "data-my-custom-key"
+var customKey = element.dataset.myCustomKey;</code></pre>
+                        <p>Assigning the value to a custom attribute you would look like:</p>
+                        <pre><code>// Sets the value to something else
+element.dataset.myCustomKey = "Some other value";
+
+// Element would be:
+<div id="myDiv" data-name="myDiv" data-id="myId" data-my-custom-key="Some other value"></div></code></pre>
+                    </section>
+
+                    <section>
+                        <p>If a data- attribute you programmatically set does not exist, it will be created:</p>
+                        <pre><code>// Set new data- attribute
+element.dataset.edeolightFtw = "true";
+
+// Element would be:
+<div id="myDiv" data-name="myDiv" data-id="myId" data-my-custom-key="Some other value" data-edelight-ftw="true"></div></code></pre>
+                        <p><br></p>
+                        <ul>
+                            <li>You cannot store objects within element.dataset without serializing them first.</li>
+                            <li>no dataset length restrictions but storing large sets of data via dataset will make for a bloated DOM<br></li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>JavaScript Battery API</h2>
+                        <p><br></p>
+                        <ul>
+                            <li>another really simple API</li>
+                            <li>provides information about the battery's current charge level, its charging status, and allows you to be notified of changes via events</li>
+                            <li>at the time of writing => mozilla only</li>
+                            <li>window.navigator.mozBattery properties:<br>
+                                <ul>
+                                    <li>charging: attribute must be set to false if the battery is discharging, and set to true, if the battery is fully charged</li>
+                                    <li>chargingTime: the time remaining in seconds until the system's battery is fully charged</li>
+                                    <li>dischargingTime: time remaining in seconds until the system's battery is completely discharged and the system is about to be suspended</li>
+                                    <li>level: current battery level scaled from 0 to 1.0<br>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        Events for each of these statuses are provided, including onchargingchange, onchargingtimechange, ondischargingtimechange and onlevelchange<br>
+                        <br>Basic usage:<br>
+                        <pre><code>var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
+
+// A few useful battery properties
+console.warn("Battery charging: ", battery.charging);
+console.warn("Battery level: ", battery.level);
+console.warn("Battery discharging time: ", battery.dischargingTime);
+
+battery.addEventListener("chargingchange", function(e) {
+    console.warn("Battery charge change: ", battery.charging);
+}, false);
+battery.addEventListener("chargingtimechange", function(e) {
+    console.warn("Battery charge time change: ", battery.chargingTime);
+}, false);
+battery.addEventListener("dischargingtimechange", function(e) {
+    console.warn("Battery discharging time change: ", battery.dischargingTime);
+}, false);
+battery.addEventListener("levelchange", function(e) {
+    console.warn("Battery level change: ", battery.level);
+}, false);</code></pre>
+                        <p><a href="/battery.html" target="_blank" title="Show me a Demo!">Show me a Demo!</a></p>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>HTML5 Link Prefetching<br>
+                            <br>
+                        </h2>
+                        <ul>
+                            <li>One effort shared by both browsers and developers is making the web browsing experience faster</li>
+                            <li>many common-known ways to keep your websites fast:&nbsp; using CSS sprites and image optimization, using .htaccess to set file headers for longer caching, javascript file compression, using CDNs,...</li>
+                            <li>new method in HTML5 - link prefetching<br>
+                                <blockquote>
+                                    <font style="font-size: 24px;">"Link prefetching is a browser mechanism, which utilizes browser idle time to download or prefetch documents that the user might visit in the near future. A web page provides a set of prefetching hints to the browser, and after the browser is finished loading the page, it begins silently prefetching specified documents and stores them in its cache. When the user visits one of the prefetched documents, it can be served up quickly out of the browser's cache."</font>
+                                    <br>
+                                </blockquote>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <p>Simply put: the browser downloads documents (pages, images, etc.)&nbsp; the user will likely visit after the current page</p>
+                        <pre><code>// full page 
+<link rel="prefetch" href="http://google.de">
+
+//just an image 
+<link rel="prefetch" href="http://www.google.de/images/icons/product/chrome-48.png"></code></pre>
+                        <p><br></p>
+                        <h3>When to Prefetch Content?<br></h3>
+                        <ul>
+                            <li>When a series of pages is much like a slideshow, load the next 1-3 pages, previous 1-3 pages (assuming they aren't massive).</li>
+                            <li>Loading images to be used on most pages throughout the website.</li>
+                            <li>Loading the next page of the search results on your website.<br>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Preventing Prefetching</h3>
+                        <p>Firefox allows you to disable link prefetching with the following setting snippet:</p>
+                        <pre><code>user_pref("network.prefetch-next", false);</code></pre>
+                        <p><br></p>
+                        <h3>Prefetching Notes</h3>
+                        <ul>
+                            <li>Prefetching does work across domains, including pulling cookies from those sites.</li>
+                            <li>Prefetching can throw off website statistics as the user doesn't technically visit a given page.<br>
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>The getUserMedia API</h2>
+                        <p>The getUserMedia API provides developers access to the user's camera.<br></p>
+                    </section>
+
+                    <section>
+                        <p>HMTL code:<br></p>
+                        <pre><code><video id="video" width="640" height="480" autoplay></video>
+<button id="snap">Snap Photo</button>
+<canvas id="canvas" width="640" height="480"></canvas></code></pre>
+                        <p>JavaScript code:<br></p>
+                        <pre><code>window.addEventListener("DOMContentLoaded", function() {
+    var canvas = document.getElementById("canvas"),
+        context    = canvas.getContext("2d"),
+        video      = document.getElementById("video"),
+        videoObj   = { "video": true },
+        errBack    = function(error) {
+            console.log("Video capture error: ", error.code);
+        };
+
+    if(navigator.getUserMedia) {
+        navigator.getUserMedia(videoObj, function(stream) {
+            video.src = stream;
+            video.play();
+        }, errBack);
+    } else if(navigator.webkitGetUserMedia) {
+        navigator.webkitGetUserMedia(videoObj, function(stream){
+            video.src = window.webkitURL.createObjectURL(stream);
+            video.play();
+        }, errBack);
+    }
+}, false);</code></pre>
+                    </section>
+
+                    <section>
+                        <ul>
+                            <li>if the browser supports getUserMedia, a simple method sets the video element's src to the user's live camera/webcam</li>
+                            <li>Calling the play method of the video then enacts the element's live video connection</li>
+                            <li>That's all that's required to connect your camera to the browser!</li>
+                            <li>
+                                Taking a photo is only marginally more difficult.&nbsp; Just add a click listener to a generic button and and draw an image from video<br>
+                                <pre><code>// Trigger photo take
+document.getElementById("snap").addEventListener("click", function() {
+    context.drawImage(video, 0, 0, 640, 480);
+});</code>        </pre>
+                            </li>
+                        </ul>
+                        <p><br></p>
+                        <p>Of course you could add some sexy image filters and make a billion dollars ;-)</p>
+                        <p><a href="/getusermedia.html" target="_blank" title="Show me a Demo!">Show me a Demo!</a></p>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>HTML5 Context Menus</h2>
+                        <p><br></p>
+                        <ul>
+                            <li>the HTML5 context menu spec allows developers to create custom context menus</li>
+                            <li>the menu information lives right within the page so there's no need to create a custom plugin</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <p>Your own custom context menus from basic HTML:</p>
+                        <pre><code><div contextmenu="mymenu">
+    <menu type="context" id="mymenu">
+        <menuitem label="Refresh Post" onclick="window.location.reload();" icon="/img/refresh-icon.png"></menuitem>
+        <menuitem label="Skip to Top" onclick="window.location='#top';" icon="/img/top_icon.gif"></menuitem>
+        <menu label="Share on..." icon="/img/share_icon.gif">
+            <menuitem label="Twitter" icon="/img/twitter_icon.gif" onclick="goTo('//twitter.com/intent/tweet?text=' + document.title + ':  ' + window.location.href);"></menuitem>
+            <menuitem label="Facebook" icon="/img/facebook_icon16x16.gif" onclick="goTo('//facebook.com/sharer/sharer.php?u=' + window.location.href);"></menuitem>
+        </menu>
+    </menu>
+</div></code></pre>
+                        <p><a href="/contextmenu.html" target="_blank" title="Show me a Demo!">Show me a Demo!</a></p>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>window.postMessage API</h2>
+                        <p><br></p>
+                        <p>One of the little known HTML5 APIs is the window.postMessageAPI. window.postMessage allows sending data messages between two windows/frames across domains. Essentially window.postMessage acts as cross-domain AJAX without the server shims<br></p>
+                    </section>
+
+                    <section>
+                        <h3>Part One:&nbsp; The Sender</h3>
+                        <p>we will open a new window and send the new window a message&nbsp;</p>
+                        <pre><code>//create popup window
+var domain = 'http://localhost';
+var myPopup = window.open(domain + '/windowPostMessageListener.html','myWindow');
+
+//periodical message sender
+setInterval(function() {
+    var message = 'Hi there fella, it's: ' + (new Date().getTime());
+    console.log('sending message:  ' + message);
+    myPopup.postMessage(message,domain); //send the message and target URI
+},6000);
+
+//listen to holla back
+window.addEventListener('message',function(event) {
+    if(event.origin !== 'http://localhost') return;
+    console.log('received response:  ',event.data);
+},false);</code></pre>
+                        <p>It's important that you validate the event origin when receiving a message because the message handler accepts messages from any URI<br></p>
+                    </section>
+
+                    <section>
+                        <h3>Part Two:&nbsp; The Destination</h3>
+                        <p>the destination window features an event listener for the "message" event and should validate the message origin</p>
+                        <p>message events are accepted from any location so it's extremely important that their origin is validated</p>
+                        <pre><code>//respond to events
+window.addEventListener('message',function(event) {
+    if(event.origin !== 'http://localhost') return;
+    console.log('message received:  ' + event.data,event);
+    event.source.postMessage('Greetings earthling!',event.origin);
+},false);</code></pre>
+                        <p><a href="/postmessagesend.html" target="_blank" title="Show me a Demo!">Show me a Demo!</a></p>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>The history API – manipulating history</h2>
+                        <p><br></p>
+                        <p>The HTML5 history API is a standardized way to manipulate the browser history via script</p>
+                        <p>new parts in HTML5 include a way to add entries to the browser history, to visibly change the URL in the browser location bar (without triggering a page refresh), and an event that fires when those entries are removed from the stack by the user pressing the browser’s back button</p>
+                        <p>This means that the URL in the browser location bar can continue to do its job, even in script-heavy applications that don’t ever perform a full page refresh<br></p>
+                    </section>
+
+                    <section>
+                        <h3>Making History<br>
+                        </h3>
+                        <p>the history.pushState() method takes three parameters:<br></p>
+                        <ul>
+                            <li>data: some structured data, such as settings or content, assigned to the history item.</li>
+                            <li>title: the name of the item in the history drop-down shown by the browser’s back and forward buttons. (Note: this is not currently supported by any major browsers.)</li>
+                            <li>url (optional): the URL to this state that should be displayed in the address bar</li>
+                        </ul>
+                        <br>
+                        <br>With these parameters, you can define the state of the page, give that state a name, and even provide a bookmarkable address, as if the page had reloaded entirely<br>
+                        <pre><code>history.pushState(data, title, URL)</code></pre>
+                    </section>
+
+                    <section>
+                        <h3>Historical events in navigation</h3>
+                        <p>The user agent fires a popstate event when the user navigates through their history, whether backwards or forwards, provided it isn’t taking the user away from the current page. That is, all those pushStates we called will keep the user on the current page, so the popstate event will fire for each history item they pop through<br></p>
+                    </section>
+
+                    <section>
+                        <h3>Rewriting history</h3>
+                        <p>The History API does allow us to make changes to our history log items. i.e. we could update the current state in response to fresh user input in a form. <br></p>
+                        <p>this is done with history.replaceState<br>replaceState works just as pushState does, with the exact same parameters, except that it updates the current entry instead of adding a new one<br><br></p>
+                    </section>
+                </section>
+
+                <section>
+                    <h1>Any Questions?<br></h1>
+                </section>
+
+                <section>
+                    <h1>Thanks for your attention!<br></h1>
+                </section>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.min.js"></script>
+
+        <script>
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+                width: 1000,
+                height: 700,
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+
+        </script>
+    </body>
+</hmtl>

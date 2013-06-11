@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>Get user media | edelight</title>
+
+        <meta name="description" content="What's new in HTML5 - a presentation by Mirko Höch">
+        <meta name="author" content="Mirko Höch">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="/css/reveal.min.css">
+        <link rel="stylesheet" href="/css/theme/default.css">
+        <style>
+        video{border:1px solid #666;float:left;margin:0 30px 10px 0;}
+        canvas{border:1px solid #666;float:left;margin:0 0 10px 0;}
+        button{border:0 none;background:#71e9f4;color:#fff;cursor:pointer;font-family:"Lato",sans-serif;font-size:30px;font-weight:500;padding:0;}
+        </style>
+    </head>
+
+    <body>
+        <div style="margin:0 auto;padding:20px;width:1314px">
+            <video id="video" autoplay="" height="480" width="640"></video>
+            <canvas id="canvas" width="640" height="480"></canvas>
+            <div style="clear:both"></div>
+            <button id="snap">Snap Photo</button>
+        </div>
+
+        <script>
+            window.addEventListener("DOMContentLoaded", function() {
+                var canvas = document.getElementById("canvas"),
+                    context    = canvas.getContext("2d"),
+                    video      = document.getElementById("video"),
+                    videoObj   = { "video": true },
+                    errBack    = function(error) {
+                        console.log("Video capture error: ", error.code);
+                    };
+
+                if(navigator.getUserMedia) {
+                    navigator.getUserMedia(videoObj, function(stream) {
+                        video.src = stream;
+                        video.play();
+                    }, errBack);
+                } else if(navigator.webkitGetUserMedia) {
+                    navigator.webkitGetUserMedia(videoObj, function(stream){
+                        video.src = window.webkitURL.createObjectURL(stream);
+                        video.play();
+                    }, errBack);
+                }
+                else if(navigator.mozGetUserMedia) {
+                    navigator.mozGetUserMedia(videoObj, function(stream){
+                        video.mozSrcObject = stream;
+                        video.play();
+                    }, errBack);
+                }
+
+                // Trigger photo take
+                document.getElementById("snap").addEventListener("click", function() {
+                    context.drawImage(video, 0, 0, 640, 480);
+                });
+            }, false);
+        </script>
+    </body>
+</hmtl>
